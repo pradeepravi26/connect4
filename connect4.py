@@ -22,7 +22,22 @@ crashed = False
 clock = pygame.time.Clock()
 game_board = pygame.image.load('connect-four-gameboard.png')
 moveCoin = 4
+column1 = [0,0,0,0,0,0]
+column2 = [0,0,0,0,0,0]
+column3 = [0,0,0,0,0,0]
+column4 = [0,0,0,0,0,0]
+column5 = [0,0,0,0,0,0]
+column6 = [0,0,0,0,0,0]
+column7 = [0,0,0,0,0,0]
+allColumn = [column1,column2,column3,column4,column5,column6,column7]
+player = 1
+column_has_change = False
 
+def isFull(column):
+    for elem in column:
+        if elem == 0:
+            return False
+    return True
 
 def text_objects(text, font, color):
         textSurface = font.render(text, True, color)
@@ -44,31 +59,45 @@ while not crashed:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT and moveCoin != 1:
                 moveCoin += -1
-                print("moveCoin has changed by 1")
             if event.key == pygame.K_RIGHT and moveCoin != 7:
                 moveCoin += 1
-                print("moveCoin has changed by -1")
-
-
-        
-        # if event.type == pygame.KEYDOWN:
-        #     if event.key == pygame.K_r and (player_1_wins == True or player_2_wins == True or tieGame == True):
-        #         p1 = True
-        #         p2 = False
-        #         player_1_wins = False
-        #         player_2_wins = False
-        #         tieGame = False
-        #         allQuadrants = [0,0,0,0,0,0,0,0,0]
+            if event.key == pygame.K_DOWN:
+                if not isFull(allColumn[moveCoin - 1]):
+                    column_has_change = False
+                    
+                    for i, elem in enumerate(allColumn[moveCoin - 1]):
+                        if elem == 0 and not column_has_change:
+                            column_has_change = True
+                            if player == 1:
+                                allColumn[moveCoin - 1] [i] = 1
+                                player = 2
+                            else:
+                                allColumn[moveCoin - 1] [i]= 5
+                                player = 1
         
 
     # If it should run every frame it should be under this
 
+
     # All drawing should be under this
     gameDisplay.fill(grey)
     gameDisplay.blit(pygame.transform.scale(game_board,(500,500)), (150,120))
-    pygame.draw.circle(gameDisplay, red, ((116+(moveCoin*71)),50), 30)
-    # print(moveCoin)
 
+    if player == 1:
+        pygame.draw.circle(gameDisplay, red, ((116+(moveCoin*71)),50), 30)
+    elif player == 2:
+        pygame.draw.circle(gameDisplay, yellow, ((116+(moveCoin*71)),50), 30)
+
+    j = 0
+    for col in allColumn:
+        i = 0
+        for elem in col:
+            if elem == 1:
+                pygame.draw.circle(gameDisplay, red, ((185+(j*71)),(515-(i*71))), 30)
+            elif elem == 5:
+                pygame.draw.circle(gameDisplay, yellow, ((185+(j*71)),(515-(i*71))), 30)
+            i += 1
+        j += 1
 
 
     pygame.display.update()
