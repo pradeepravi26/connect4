@@ -59,6 +59,10 @@ def check_if_player_wins(player, allColumn):
         for j in range (0,3):
             if (allColumn[i] [j]) + (allColumn[i+1] [j+1]) + (allColumn[i+2] [j+2]) + (allColumn[i+3] [j+3]) == score:
                 return True
+    for i in range (6,2,-1):
+        for j in range (0,3):
+            if (allColumn[i] [j]) + (allColumn[i-1] [j+1]) + (allColumn[i-2] [j+2]) + (allColumn[i-3] [j+3]) == score:
+                return True
     return False
 
 
