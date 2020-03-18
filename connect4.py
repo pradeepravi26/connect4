@@ -32,12 +32,35 @@ column7 = [0,0,0,0,0,0]
 allColumn = [column1,column2,column3,column4,column5,column6,column7]
 player = 1
 column_has_change = False
+player1wins = False
+player2wins = False
+
 
 def isFull(column):
     for elem in column:
         if elem == 0:
             return False
     return True
+
+def check_if_player_wins(player, allColumn):
+    if player == 1:
+        score = 4
+    else:
+        score = 20
+    for i in range (0,6):
+        for j in range (0,2):
+            if (allColumn[i] [0+j]) + (allColumn[i] [1+j]) + (allColumn[i] [2+j]) + (allColumn[i] [3+j]) == score:
+                return True
+    for i in range (0,5):
+        for j in range (0,3):
+            if (allColumn[0+j] [i]) + (allColumn[1+j] [i]) + (allColumn[2+j] [i]) + (allColumn[3+j] [i]) == score:
+                return True
+    for i in range (0,4):
+        for j in range (0,3):
+            if (allColumn[i] [j]) + (allColumn[i+1] [j+1]) + (allColumn[i+2] [j+2]) + (allColumn[i+3] [j+3]) == score:
+                return True
+    return False
+
 
 def text_objects(text, font, color):
         textSurface = font.render(text, True, color)
@@ -61,23 +84,38 @@ while not crashed:
                 moveCoin += -1
             if event.key == pygame.K_RIGHT and moveCoin != 7:
                 moveCoin += 1
+            if event.key == pygame.K_r and (player1wins or player2wins) == True:
+                column1 = [0,0,0,0,0,0]
+                column2 = [0,0,0,0,0,0]
+                column3 = [0,0,0,0,0,0]
+                column4 = [0,0,0,0,0,0]
+                column5 = [0,0,0,0,0,0]
+                column6 = [0,0,0,0,0,0]
+                column7 = [0,0,0,0,0,0]
+                player1wins = False
+                player2wins = False
+                player = 1
+                allColumn = [column1,column2,column3,column4,column5,column6,column7]
+                
             if event.key == pygame.K_DOWN:
                 if not isFull(allColumn[moveCoin - 1]):
                     column_has_change = False
-                    
                     for i, elem in enumerate(allColumn[moveCoin - 1]):
                         if elem == 0 and not column_has_change:
                             column_has_change = True
                             if player == 1:
                                 allColumn[moveCoin - 1] [i] = 1
+                                if check_if_player_wins(player, allColumn):
+                                    player1wins = True
                                 player = 2
                             else:
                                 allColumn[moveCoin - 1] [i]= 5
+                                if check_if_player_wins(player, allColumn):
+                                    player2wins = True
                                 player = 1
-        
+                            
 
     # If it should run every frame it should be under this
-
 
     # All drawing should be under this
     gameDisplay.fill(grey)
@@ -98,6 +136,13 @@ while not crashed:
                 pygame.draw.circle(gameDisplay, yellow, ((185+(j*71)),(515-(i*71))), 30)
             i += 1
         j += 1
+
+    if player1wins:
+        gameDisplay.fill(grey)
+        message_display('player 1 wins', 400, 200, 115, red)
+    if player2wins:
+        gameDisplay.fill(grey)
+        message_display('player 2 wins', 400, 200, 115, yellow)
 
 
     pygame.display.update()
